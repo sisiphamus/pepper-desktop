@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outdoors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wizard">
+
+    <!-- Page 1: Welcome -->
+    <div class="page active" data-page="0">
+      <div class="page-content welcome">
+        <p class="welcome-label">Welcome to</p>
+        <h1 class="brand">Outdoors</h1>
+        <p class="tagline">Stop working, start living.</p>
+        <p class="description">
+          You text an agent that lives in your computer.
+          No need for special keys, tracking your passwords, your agent uses your computer the way you do.
+        </p>
+        <button class="btn-primary" id="btn-begin">Begin Setup</button>
+      </div>
+    </div>
+
+    <!-- Page 2: Installing dependencies -->
+    <div class="page" data-page="1">
+      <div class="page-content">
+        <h2>Setting things up</h2>
+        <p class="subtitle">This will only take a moment.</p>
+        <div class="checklist" id="install-checklist">
+          <div class="check-item" data-step="node">
+            <span class="check-icon waiting"></span>
+            <span class="check-label">Preparing environment</span>
+            <span class="check-detail"></span>
+          </div>
+          <div class="check-item" data-step="claude">
+            <span class="check-icon waiting"></span>
+            <span class="check-label">Claude CLI</span>
+            <span class="check-detail"></span>
+          </div>
+          <div class="check-item" data-step="mcp">
+            <span class="check-icon waiting"></span>
+            <span class="check-label">Extensions</span>
+            <span class="check-detail"></span>
+          </div>
+        </div>
+        <button class="btn-primary hidden" id="btn-install-continue">Continue</button>
+        <p class="error-text hidden" id="install-error"></p>
+      </div>
+    </div>
+
+    <!-- Page 3: Claude authentication -->
+    <div class="page" data-page="2">
+      <div class="page-content">
+        <h2>Connect your Claude account</h2>
+        <p class="subtitle">
+          Outdoors needs your personal Claude CLI to work.
+          This opens a browser window where you can sign in.
+        </p>
+        <div id="auth-section">
+          <div id="auth-not-connected">
+            <button class="btn-primary" id="btn-auth">Sign in to Claude</button>
+            <p class="auth-hint">A browser window will open for authentication.</p>
+          </div>
+          <div id="auth-checking" class="hidden">
+            <div class="spinner"></div>
+            <p class="auth-status-text">Waiting for authentication...</p>
+            <p class="auth-hint">Complete the sign-in in your browser, then return here.</p>
+          </div>
+          <div id="auth-connected" class="hidden">
+            <div class="success-indicator"></div>
+            <p class="auth-status-text">Connected to Claude</p>
+            <button class="btn-primary" id="btn-auth-continue">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 4: Telegram bot setup -->
+    <div class="page" data-page="3">
+      <div class="page-content telegram-page">
+        <h2>Create your Telegram bot</h2>
+        <p class="subtitle">Each person creates their own private bot. It takes about two minutes.</p>
+
+        <div class="steps-container" id="telegram-steps">
+          <div class="step">
+            <span class="step-number">1</span>
+            <div class="step-body">
+              <p>Open Telegram and message <strong>@BotFather</strong></p>
+              <button class="btn-link" id="btn-botfather">Open BotFather in Telegram</button>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-number">2</span>
+            <div class="step-body">
+              <p>Send the command <code>/newbot</code></p>
+              <p class="step-detail">BotFather will ask for a name and username. Choose anything you like.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-number">3</span>
+            <div class="step-body">
+              <p>Copy the bot token and paste it here</p>
+              <p class="step-detail">BotFather will send you a message containing your token. It looks like <code>123456:ABC-DEF...</code></p>
+              <div class="token-row">
+                <input type="text" id="token-input" placeholder="Paste your bot token" class="input-field" spellcheck="false" autocomplete="off">
+                <button class="btn-secondary" id="btn-connect">Connect</button>
+              </div>
+              <p class="token-status hidden" id="token-status"></p>
+            </div>
+          </div>
+
+          <div class="help-toggle">
+            <button class="btn-text" id="btn-help-toggle">Need help finding the token?</button>
+            <div class="help-content hidden" id="help-content">
+              <ol>
+                <li>Open Telegram on your phone or desktop</li>
+                <li>Search for <strong>@BotFather</strong> (it has a blue checkmark)</li>
+                <li>Tap <strong>Start</strong> if you haven't messaged it before</li>
+                <li>Type <code>/newbot</code> and send</li>
+                <li>Enter any name when asked (this is the display name)</li>
+                <li>Enter a username ending in "bot" (e.g., <code>MyOutdoorsBot</code>)</li>
+                <li>BotFather will reply with your token. Copy the entire token string.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR code section, shown after token validation -->
+        <div class="qr-section hidden" id="qr-section">
+          <div class="qr-header">
+            <div class="success-indicator"></div>
+            <p>Bot connected successfully</p>
+          </div>
+          <div class="qr-body">
+            <h3>Scan to start chatting</h3>
+            <p class="qr-instruction">
+              Open your phone camera and point it at this code.
+              It will open your bot in Telegram.
+            </p>
+            <div class="qr-frame">
+              <img id="qr-image" alt="QR Code" />
+            </div>
+            <p class="bot-name" id="bot-name-display"></p>
+            <div class="verify-section hidden" id="verify-section">
+              <p class="verify-instruction">After scanning, send this code to your bot to verify ownership:</p>
+              <p class="verify-code" id="verify-code"></p>
+            </div>
+          </div>
+          <button class="btn-primary" id="btn-telegram-continue">Finish Setup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 5: Complete -->
+    <div class="page" data-page="4">
+      <div class="page-content complete-page">
+        <div class="complete-mark"></div>
+        <h2>You're all set.</h2>
+        <p class="subtitle">
+          Outdoors is now running quietly in the background.
+        </p>
+        <p class="complete-instruction">
+          Send a message to your bot on Telegram to get started.
+          That's it. No apps to open, no windows to manage.
+        </p>
+        <div class="complete-commands">
+          <p class="commands-label">Useful commands</p>
+          <div class="command-row"><code>/new</code><span>Start a fresh conversation</span></div>
+          <div class="command-row"><code>/pause</code><span>Pause/resume the bot</span></div>
+          <div class="command-row"><code>/start</code><span>Check that the bot is running</span></div>
+        </div>
+        <button class="btn-primary" id="btn-close">Close</button>
+      </div>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="progress-dots" id="progress-dots">
+      <span class="dot active" data-dot="0"></span>
+      <span class="dot" data-dot="1"></span>
+      <span class="dot" data-dot="2"></span>
+      <span class="dot" data-dot="3"></span>
+      <span class="dot" data-dot="4"></span>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

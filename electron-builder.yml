@@ -1,0 +1,51 @@
+appId: com.outdoors.app
+productName: Outdoors
+copyright: Copyright © 2026
+
+directories:
+  output: dist
+
+files:
+  - main.js
+  - preload.js
+  - config.js
+  - claude-bridge.js
+  - package.json
+  - pipeline/**/*
+  - memory/**/*
+  - session/**/*
+  - util/**/*
+  - ml/**/*
+  - bot/memory/**/*
+  - bot/outputs/.gitkeep
+  - CLAUDE.md.template
+  - src/**/*
+  - "!src/**/*.map"
+  - "!dist/**"
+  - "!node_modules/.cache/**"
+
+extraMetadata:
+  main: main.js
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: src/assets/icon.ico
+  signAndEditExecutable: false
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  installerIcon: src/assets/icon.ico
+  uninstallerIcon: src/assets/icon.ico
+  installerHeaderIcon: src/assets/icon.ico
+  shortcutName: Outdoors
+
+asar: true
+
+asarUnpack:
+  - ml/**/*
